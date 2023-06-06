@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,7 +78,9 @@ public class AirportSearch {
         }
         long currentBytes = 0;
         List<Airport> airports = new ArrayList<>();
-        try (BufferedReader reader = Files.newBufferedReader(Path.of("src/main/resources/airports.csv"))) {
+        ClassLoader classLoader = AirportSearch.class.getClassLoader();
+        InputStream stream = classLoader.getResourceAsStream("airports.csv");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             for (Integer lineNumber : orderedLinesToRead.keySet()) {
 
                 currentBytes += reader.skip(orderedLinesToRead.get(lineNumber) - currentBytes);
@@ -101,7 +105,10 @@ public class AirportSearch {
     public void readFile() {
         long countBytes = 0;
         int countLines = 0;
-        try (BufferedReader reader = Files.newBufferedReader(Path.of("src/main/resources/airports.csv"))) {
+        ClassLoader classLoader = AirportSearch.class.getClassLoader();
+
+        InputStream stream = classLoader.getResourceAsStream("airports.csv");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             while (reader.ready()) {
                 String currentLine = reader.readLine();
                 StringTokenizer tokenizer = new StringTokenizer(currentLine, ",");
